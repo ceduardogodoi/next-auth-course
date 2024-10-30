@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,6 +32,8 @@ const formSchema = z.object({
 type FormSchema = z.infer<typeof formSchema>;
 
 export default function LoginPage() {
+  const router = useRouter();
+
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -40,7 +43,11 @@ export default function LoginPage() {
   });
 
   const handleSubmit: SubmitHandler<FormSchema> = async (data) => {
-    await loginWithCredentials(data);
+    const response = await loginWithCredentials(data);
+    if (response?.error != null) {
+    } else {
+      router.push("/my-account");
+    }
   };
 
   return (
