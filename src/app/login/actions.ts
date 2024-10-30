@@ -30,7 +30,10 @@ export async function loginWithCredentials(credentials: CredentialsArgs) {
       password: credentials.password,
       redirect: false,
     });
-  } catch (error) {
-    console.error(error);
+  } catch {
+    return {
+      error: true,
+      message: "Incorrect user or password",
+    };
   }
 }

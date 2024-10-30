@@ -9,6 +9,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -23,6 +24,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { passwordSchema } from "@/validation/password-schema";
 import { loginWithCredentials } from "./actions";
+import Link from "next/link";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -45,6 +47,9 @@ export default function LoginPage() {
   const handleSubmit: SubmitHandler<FormSchema> = async (data) => {
     const response = await loginWithCredentials(data);
     if (response?.error != null) {
+      form.setError("root", {
+        message: response.message,
+      });
     } else {
       router.push("/my-account");
     }
@@ -95,11 +100,32 @@ export default function LoginPage() {
                   )}
                 />
 
+                {form.formState.errors.root?.message != null && (
+                  <FormMessage>
+                    {form.formState.errors.root.message}
+                  </FormMessage>
+                )}
                 <Button type="submit">Register</Button>
               </fieldset>
             </form>
           </Form>
         </CardContent>
+
+        <CardFooter className="flex-col gap-2">
+          <div className="text-muted-foreground text-sm">
+            Don&apos;t have an account?{" "}
+            <Link href="/register" className="underline">
+              Register
+            </Link>
+          </div>
+
+          <div className="text-muted-foreground text-sm">
+            Forgot Password?{" "}
+            <Link href="/password-reset" className="underline">
+              Reset my password
+            </Link>
+          </div>
+        </CardFooter>
       </Card>
     </main>
   );
