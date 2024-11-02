@@ -105,7 +105,7 @@ export default function LoginPage() {
                     {form.formState.errors.root.message}
                   </FormMessage>
                 )}
-                <Button type="submit">Register</Button>
+                <Button type="submit">Login</Button>
               </fieldset>
             </form>
           </Form>

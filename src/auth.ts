@@ -6,6 +6,20 @@ import { eq } from "drizzle-orm";
 import { compare } from "bcryptjs";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  callbacks: {
+    jwt({ user, token }) {
+      if (user != null) {
+        token.id = user.id;
+      }
+
+      return token;
+    },
+    session({ session, token }) {
+      session.user.id = token.id as string;
+
+      return session;
+    },
+  },
   providers: [
     Credentials({
       credentials: {
