@@ -15,6 +15,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { passwordMatchSchema } from "@/validation/password-match-schema";
 import { passwordSchema } from "@/validation/password-schema";
+import { changePassword } from "../actions";
+import { useToast } from "@/hooks/use-toast";
 
 const formSchema = z
   .object({
@@ -25,6 +27,8 @@ const formSchema = z
 type FormSchema = z.infer<typeof formSchema>;
 
 export function ChangePasswordForm() {
+  const { toast } = useToast();
+
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -35,7 +39,22 @@ export function ChangePasswordForm() {
   });
 
   const handleSubmit: SubmitHandler<FormSchema> = async (data) => {
-    console.log(data);
+    const response = await changePassword(data);
+    if (response?.error) {
+      form.setError("root", {
+        message: response.message,
+      });
+
+      return;
+    }
+
+    toast({
+      title: "Password Changed",
+      description: "Your password has been updated.",
+      className: "bg-green-500 text-white",
+    });
+
+    form.reset();
   };
 
   return (
@@ -89,6 +108,10 @@ export function ChangePasswordForm() {
               </FormItem>
             )}
           />
+
+          {form.formState.errors.root?.message != null && (
+            <FormMessage>{form.formState.errors.root.message}</FormMessage>
+          )}
 
           <Button type="submit">Change Password</Button>
         </fieldset>
