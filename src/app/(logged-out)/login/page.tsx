@@ -44,6 +44,8 @@ export default function LoginPage() {
     },
   });
 
+  const email = form.watch("email");
+
   const handleSubmit: SubmitHandler<FormSchema> = async (data) => {
     const response = await loginWithCredentials(data);
     if (response?.error != null) {
@@ -121,7 +123,10 @@ export default function LoginPage() {
 
           <div className="text-muted-foreground text-sm">
             Forgot Password?{" "}
-            <Link href="/password-reset" className="underline">
+            <Link
+              href={`/password-reset${email ? `?email=${email}` : ""}`}
+              className="underline"
+            >
               Reset my password
             </Link>
           </div>

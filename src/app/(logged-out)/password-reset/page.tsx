@@ -20,6 +20,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -30,10 +31,12 @@ const formSchema = z.object({
 type FormSchema = z.infer<typeof formSchema>;
 
 export default function PasswordResetPage() {
+  const searchParams = useSearchParams();
+
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
+      email: decodeURIComponent(searchParams.get("email") ?? ""),
     },
   });
 
