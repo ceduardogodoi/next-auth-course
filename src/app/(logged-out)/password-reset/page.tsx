@@ -23,6 +23,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
+import { passwordReset } from "./actions";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -41,7 +42,7 @@ export default function PasswordResetPage() {
   });
 
   const handleSubmit: SubmitHandler<FormSchema> = async (data) => {
-    console.log(data);
+    await passwordReset(data.email);
   };
 
   return (
