@@ -14,33 +14,35 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { passwordMatchSchema } from "@/validation/password-match-schema";
-import { passwordSchema } from "@/validation/password-schema";
-import { changePassword } from "./actions";
+import { updatePassword } from "./actions";
 import { useToast } from "@/hooks/use-toast";
 
-const formSchema = z
-  .object({
-    currentPassword: passwordSchema,
-  })
-  .and(passwordMatchSchema);
+const formSchema = passwordMatchSchema;
 
 type FormSchema = z.infer<typeof formSchema>;
 
-export function ChangePasswordForm() {
+type UpdatePasswordFormProps = {
+  token: string;
+};
+
+export function UpdatePasswordForm({ token }: UpdatePasswordFormProps) {
   const { toast } = useToast();
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      currentPassword: "",
       password: "",
       passwordConfirm: "",
     },
   });
 
   const handleSubmit: SubmitHandler<FormSchema> = async (data) => {
-    const response = await changePassword(data);
-    if (response?.error) {
+    const response = await updatePassword({
+      token,
+      password: data.password,
+      passwordConfirm: data.passwordConfirm,
+    });
+    if (response.error) {
       form.setError("root", {
         message: response.message,
       });
@@ -64,21 +66,6 @@ export function ChangePasswordForm() {
           className="flex flex-col gap-2"
           disabled={form.formState.isSubmitting}
         >
-          <FormField
-            control={form.control}
-            name="currentPassword"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Current Password</FormLabel>
-                <FormControl>
-                  <Input {...field} type="password" />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
           <FormField
             control={form.control}
             name="password"
@@ -113,7 +100,7 @@ export function ChangePasswordForm() {
             <FormMessage>{form.formState.errors.root.message}</FormMessage>
           )}
 
-          <Button type="submit">Change Password</Button>
+          <Button type="submit">Update Password</Button>
         </fieldset>
       </form>
     </Form>
