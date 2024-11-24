@@ -27,7 +27,7 @@ export default async function UpdatePassword({
 
     const now = Date.now();
     if (
-      passwordResetToken.tokenExpiry != null &&
+      passwordResetToken?.tokenExpiry != null &&
       now < passwordResetToken.tokenExpiry.getTime()
     ) {
       tokenIsValid = true;

@@ -1,7 +1,8 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -42,12 +43,8 @@ export function UpdatePasswordForm({ token }: UpdatePasswordFormProps) {
       password: data.password,
       passwordConfirm: data.passwordConfirm,
     });
-    if (response.error) {
-      form.setError("root", {
-        message: response.message,
-      });
-
-      return;
+    if (response?.tokenInvalid) {
+      window.location.reload();
     }
 
     toast({
@@ -59,7 +56,14 @@ export function UpdatePasswordForm({ token }: UpdatePasswordFormProps) {
     form.reset();
   };
 
-  return (
+  return form.formState.isSubmitSuccessful ? (
+    <div>
+      Your password has been updated.{" "}
+      <Link className="underline" href="/login">
+        Click here to log in to your account.
+      </Link>
+    </div>
+  ) : (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)}>
         <fieldset
