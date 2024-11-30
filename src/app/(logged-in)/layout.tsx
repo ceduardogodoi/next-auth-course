@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { PropsWithChildren } from "react";
+import { redirect } from "next/navigation";
 import { LogoutButton } from "./logout-button";
 import { auth } from "@/auth";
-import { redirect } from "next/navigation";
 
 export default async function LoggedInLayout({ children }: PropsWithChildren) {
   const session = await auth();
